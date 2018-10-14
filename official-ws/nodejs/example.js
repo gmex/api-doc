@@ -35,7 +35,7 @@ market.on("trade",function (ret){
 market.on("orderl2",function (ret){
     console.log(`[on.market.orderl2]<< ${JSON.stringify(ret)}`)
 });
-market.on("order10",function (ret){
+market.on("order20",function (ret){
     console.log(`[on.market.order20]<< ${JSON.stringify(ret)}`)
 });
 market.on("kline",function (ret){
@@ -44,16 +44,13 @@ market.on("kline",function (ret){
 
 market.init({ws_url:test_market_url}, ()=>{
     console.log("market connected!")
-    market.request('GetInstruments',{},(ret)=>{
-        console.log(`[market.GetInstruments]<< ${JSON.stringify(ret)}`)
+    market.request('GetAssetD',{},(ret)=>{
+        console.log(`[market.GetAssetD]<< ${JSON.stringify(ret)}`)
         if(ret.code==0) {
-            var sym = ret.data[0]; // example: BTC1903
+            var sym = ret.data[0].Sym; // example: BTC1903 or GAEA/BTC etc.
             market.request('Sub',["trade_"+sym,"tick_"+sym,"kline_1m_"+sym,"order20_"+sym,"orderl2_"+sym],(ret)=>{})
         }
     })
-    market.request('GetAssetD',{}, (ret)=>{
-        console.log(`[market.GetAssetD]<< ${JSON.stringify(ret)}`)
-    });
 });
 
 
@@ -87,7 +84,7 @@ trade.init({ws_url:test_trade_url,SecretKey: secret_key}, ()=>{
             userdata.aid01 = userdata.uid+"01";  // Future account
             userdata.aid02 = userdata.uid+"02";  // Token trading account
 
-						// do some init queries
+            // do some init queries
             trade.request('GetWallets',{AId: userdata.aid01}, (ret)=>{
                 console.log(`[trade.GetWallets]<< ${JSON.stringify(ret)}`)
             });
@@ -101,7 +98,7 @@ trade.init({ws_url:test_trade_url,SecretKey: secret_key}, ()=>{
                 console.log(`[trade.GetPositions]<< ${JSON.stringify(ret)}`)
             });
 
-           // do some trade etc, if you need
+           // do some trades etc, if you need
            //trade.request('OrderNew', ....
            //trade.request('OrderDel', ....
         }
