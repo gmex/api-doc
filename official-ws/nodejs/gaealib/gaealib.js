@@ -143,7 +143,7 @@ gaea.prototype.request = function (route,pmsg,cb) {
     this.msgMap[msg.rid] = {tm:Date.now(),cb:cb,req:route,args:pmsg};
 
     if(typeof(msg.args)=='object') {
-        msg.Signature = CryptoJS.MD5(msg.req+String(msg.rid)+JSON.stringify(msg.args)+String(msg.expires)+this.SecretKey).toString().toLowerCase();
+        msg.signature = CryptoJS.MD5(msg.req+String(msg.rid)+JSON.stringify(msg.args)+String(msg.expires)+this.SecretKey).toString().toLowerCase();
     }
 
     try{
