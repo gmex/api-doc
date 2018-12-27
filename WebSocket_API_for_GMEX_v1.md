@@ -1,4 +1,4 @@
-# GMEX WebSocket API (v1) beta
+# GMEX WebSocket API (v1)
 
 ## 说明
 
@@ -6,7 +6,7 @@
 请注意，行情和交易两个服务是分开的，行情接口无需认证可以自由访问，交易部分则需要用户开通API-KEY后通过自己的KEY认证授权后方可使用。
 
 
-GMEX官方的生产环境(暂未开放)：
+GMEX官方的生产环境：
 ```
 官方网址： https://www.gmex.io
 行情服务： wss://api-market.gmex.io/v1/market
@@ -62,7 +62,14 @@ GMEX官方的生产环境(暂未开放)：
             "SettleCoin":"ETH",
             "QuoteCoin":"ETH",
             "SettleR":0.0005,
-            "DenyOpenAfter":1545980400000
+            "DenyOpenAfter":1545980400000,
+	    "FundingLongR":0,             // 当前周期内的资金费率
+	    "FundingPredictedR":0,        // 下个周期预测的资金费率
+	    "FundingShortR":0,            // 当前未使用字段
+	    "FundingInterval": 55,        // 结算间隔(毫秒)
+	    "FundingNext": 56, 	          // 下次结算时间戳
+	    "FundingTolerance": 59,       // 偏移宽容度
+	    "FundingFeeR": 60             // Funding结算佣金
         },
         {"Sym":"BTC1812","Beg":1,"Expire":1545984000000,"PrzMaxChg":1000,"PrzMinInc":0.5,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":6731.3100000000004001776687800884246826171875,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":6731.0,"OpenInterest":3431840,"PrzIndex":6737.3525,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"BTC","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"BTC","QuoteCoin":"BTC","SettleR":0.0005,"DenyOpenAfter":1545980400000},
         {"Sym":"ETH1809","Beg":1,"Expire":1538121600000,"PrzMaxChg":1000,"PrzMinInc":0.05,"PrzMax":1000000,"OrderMaxQty":10000000,"LotSz":1,"PrzM":244.19999999999998863131622783839702606201171875,"MIR":0.07,"MMR":0.05,"OrderMinVal":0,"PrzLatest":244.20,"OpenInterest":4500733,"PrzIndex":244.8863,"PosLmtStart":10000000,"PosOpenRatio":0.05,"FeeMkrR":-0.0003,"FeeTkrR":0.0007,"Mult":1,"FromC":"ETH","ToC":"USD","TrdCls":2,"MkSt":1,"Flag":1,"SettleCoin":"ETH","QuoteCoin":"ETH","SettleR":0.0005,"DenyOpenAfter":1538118000000},
@@ -110,11 +117,18 @@ type AssetD struct {
     SettleCoin          string  // 结算货币
     QuoteCoin           string  // 报价货币
     SettleR             float64 // 结算费率
+    FundingLongR        float64     	// 当前周期内的资金费率
+    FundingPredictedR   float64     	// 下个周期预测的资金费率
+    FundingShortR       float64    	// 当前未使用字段
+    FundingInterval     uint32     	// 结算间隔(毫秒)
+    FundingNext 	int64      	// 下次结算时间戳
+    FundingTolerance    float64     	// 偏移宽容度
+    FundingFeeR         float64      	// Funding结算佣金
 }
 ```
 
 
-2. 获取指数列表： GetCompositeIndex
+2. 获取综合指数列表： GetCompositeIndex
 ```js
 // 发送请求消息
 {
@@ -220,7 +234,10 @@ type AssetD struct {
         "Turnover24":843.7992005395208,
         "Volume":40901214,
         "Turnover":0,
-        "OpenInterest":3436394
+        "OpenInterest":3436394,
+	"FundingLongR":0,             // 当前周期内的资金费率
+	"FundingPredictedR":0,        // 下个周期预测的资金费率
+	"FundingShortR":0             // 当前未使用字段
     }
 }
 
@@ -279,6 +296,7 @@ type AssetD struct {
 ## 交易API
 
 1. 用户登录
+
 用户首先要在网站上的个人中心开启API-KEY功能并生成需要的公私秘钥才能使用交易API功能。
 
 ```js
@@ -287,14 +305,14 @@ type AssetD struct {
 /**
  *  参数说明
  * {
- *  "req":"Login",              // 请求的动作类型
+ *  "req":"Login",              			// 请求的动作类型
  *  "rid":"1",
- *  "expires":1538222696758,    // 消息超时时间
- *  "args":{                    // 服务端所需的参数
- *      "UserName":"example@gaea.com",              // 账号
- *      "UserCred":"mVAAADjNHzhvehaEvU$BMJoU7BZk"   // APIKey
+ *  "expires":1538222696758,    			// 消息超时时间
+ *  "args":{                    			// 服务端所需的参数
+ *      "UserName":"example@gaea.com",              	// 账号
+ *      "UserCred":"mVAAADjNHzhvehaEvU$BMJoU7BZk"   	// APIKey
  *  },
- *  "signature": "74c33368e9a1f8d6d13cdf0bf5aa02a8" // 签名,可参考生产签名的方法
+ *  "signature": "74c33368e9a1f8d6d13cdf0bf5aa02a8" 	// 签名,可参考生产签名的方法
  * }
  * 
  * 生成签名的方法:
@@ -312,6 +330,19 @@ type AssetD struct {
 
 // 需要注意的是: Args 参数一般为JSON对象(除Time)，在签名时需要序列化为字符串，序列化没有字段顺序要求,但是需要保持签名时序列化的顺序与最终发出消息时序列化的顺序一致。
 // 补充: Time消息不要签名
+
+// 发送消息
+  {
+   "req":"Login",              				// 请求的动作类型
+   "rid":"1",
+   "expires":1538222696758,    				// 消息超时时间
+   "args":{                    				// 服务端所需的参数
+       "UserName":"example@gaea.com",              	// 账号
+       "UserCred":"mVAAADjNHzhvehaEvU$BMJoU7BZk"   	// APIKey
+   },
+   "signature": "74c33368e9a1f8d6d13cdf0bf5aa02a8" 	// 签名,可参考生产签名的方法
+ }
+
 
 // 收到返回消息
 // 注意：这里收到的 UserId 是用户的系统内部唯一编号，简称 UID， 非常重要，系统用此ID后面增加两位数字表示用户的子账户ID,比如UID=1234567，则合约子账号的AId即为123456701；
@@ -341,11 +372,18 @@ type AssetD struct {
 
 + UID 和 AID
 	一个用户对应一个系统内唯一的UID(字符串);
+	
 	一个用户下面可以有多个AID,AID是UID后面加两位构成;
+	
 	每个用户注册出来时会自动创建一个默认的AID,就是UID后面加01;
+	
 	用户可以自己创建多个子账户,因此,一个用户会有多个AID;在系统内部,所有的AID全局唯一;
+	
 	用户可以在自己的子账户之间相互转移自己的所有的数字货币;
+	
 	用户下单时指定自己的子账户,该单的风险可以控制在这个子账户范围内,从而可以控制风险.
+	
++ 钱包分为币币钱包、合约钱包、我的钱包三种类型,分别对应的AId为:合约钱包AId=UID+'01' 币币钱包AId=UID+'02' 我的钱包AId=UID+'03'
     
 2. 查询当前系统的合约列表(必须参数 AId)： GetAssetD
 
@@ -755,15 +793,15 @@ type AssetD struct {
 args: {
 "AId": "账户Id",
 "COrdId": "filled by client,客户端自己填写",
-"Sym": "BTC1809",  // 交易符号，比如XBTUSD
-"Dir": 1,   // 委单方向 买/卖, 1:BID/BUY, -1:ASK/SELL
-"OType": 1,  // 报价类型, 1:Limit(限价委单 ), 2: Market(市价委单,匹配后转限价), 3: StopMarket (市价止损);
-"Prz": 8000,  // 价格
-"Qty": 10000, // 数量(如果>0则为做多,如果<0则为做空)
-"QtyDsp": 0,  // 显示数量, 0表示不隐藏, 用于支持冰山委托
-"Tif": 0, // 生效时间设定, 0:GoodTillCancel, 1:ImmediateOrCancel/FillAndKill, 2:FillOrKill
-"OrdFlag": 0, // 标志位, 0: OF_INVALID, 1: POSTONLY, 2: REDUCEONLY, 4: CLOSEONTRIGGER;
-"PrzChg" 0, // 市价成交档位
+"Sym": "BTC1809",  		// 交易符号，比如XBTUSD
+"Dir": 1,   			// 委单方向 买/卖, 1:BID/BUY, -1:ASK/SELL
+"OType": 1,  			// 报价类型, 1:Limit(限价委单 ), 2: Market(市价委单,匹配后转限价), 3: StopMarket (市价止损);
+"Prz": 8000,  			// 价格
+"Qty": 10000, 			// 数量(如果>0则为做多,如果<0则为做空)
+"QtyDsp": 0,  			// 显示数量, 0表示不隐藏, 用于支持冰山委托
+"Tif": 0, 			// 生效时间设定, 0:GoodTillCancel, 1:ImmediateOrCancel/FillAndKill, 2:FillOrKill
+"OrdFlag": 0, 			// 标志位, 0: OF_INVALID, 1: POSTONLY, 2: REDUCEONLY, 4: CLOSEONTRIGGER;
+"PrzChg" 0, 			// 市价成交档位
 }
 ```
 
@@ -841,17 +879,22 @@ args: {
 |AId|用户的子账号ID|
 |Sec|设置N秒后自动撤销AId下的所有报单|
 
-调用此接口成功后，用户该AId下的所有报单将在n秒后被全部自动撤单。通过设置0秒可以禁用此功能,常见的使用模式是设 timeout 为 60000，并每隔 15 秒调用一次,建议每次使用完API将Sec设置为0,禁用此功能。
+调用此接口成功后，用户该AId下的所有报单将在n秒后被全部自动撤单。通过设置0秒可以禁用此功能,常见的使用模式是设 timeout 为 60000,并每隔 15 秒调用一次,建议每次使用完API将Sec设置为0,禁用此功能。
 
 
 
 13. 用户收到的推送消息
 
 用户登录后会收到的推送消息的subj有：
+
 报单通知 onOrder
+
 持仓通知 onPosition
+
 钱包通知 onWallet
+
 钱包日志 onWltLog
+
 成交通知 onTrade
 
 ```js
@@ -979,18 +1022,18 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 }
 
 ```
- 14. 查询用户的风险限额GetRiskLimit(内测中,不建议使用)
+ 14. 查询用户的风险限额GetRiskLimit(内测中)
 ```JavaScript
     /**
     * 功能: 查询某个交易对用户的风险限额
     * 参数说明:
-    * expires: 消息的有效时间
-    * rid: 10   //用户发送请求的唯一编号，由于websocket是异步通讯，用户需要通过匹配收到消息的rid和自己发送的rid来匹配操作和应答。
-    * req: 'GetRiskLimit'   // 请求的动作名称
-    * signature: ""        // 签名,参考签名的生成规则
+    * expires: 			// 消息的有效时间
+    * rid: 10   		//用户发送请求的唯一编号，由于websocket是异步通讯，用户需要通过匹配收到消息的rid和自己发送的rid来匹配操作和应答。
+    * req: 'GetRiskLimit'   	// 请求的动作名称
+    * signature: ""        	// 签名,参考签名的生成规则
     * args: {
-    *  "AId": "", // 账号的AId,
-    *  "Sym": "", // 交易对名称
+    *  "AId": "", 		// 账号的AId,
+    *  "Sym": "", 		// 交易对名称
     * }
     */
     // 请求发送参数
