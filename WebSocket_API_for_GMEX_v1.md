@@ -1068,7 +1068,6 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 
 ## 委托状态码
 
-
 | ErrCode| ErrTxt | 描述 |
 |:------:|:------|:------|
 | 0       |  NORERROR| 没有错误  |
@@ -1087,8 +1086,8 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 | 13      |  NOT_SUFFICIENT     | 资金不足 |
 | 14      |  WILLFILL     | 对于PostOnly，本委托会成交 |
 | 15      |  EXECUTE_FAIL     | 对FillOrKill委托，这表示执行撮合失败 |
-| 16      |  EXCEED_LIMIT_MINVAL     | 超过限制|
-| 17      |  VAL_TOO_SMALL     | 委托价值太小 |
+| 16      |  --UNUSED--     | --UNUSED-- |
+| 17      |  ORDQTY_TOO_BIG_TOO_SMALL     | 委托价值太小 |
 | 18      |  EXCEED_LIMIT_PRZ_QTY     | 价格或者数量超出限制 |
 | 19      |  DENYOPEN_BY_POS     | 仓位超出限制 |
 | 20      |  DENYOPEN_BY_RD     | 禁止开仓 |
@@ -1098,5 +1097,17 @@ type TrdRec struct {        // **成交结构体字段定义说明**
 | 24      |  DENYOPEN_BY_TIME     | 超出开仓时间限制 |
 | 25      |  MD5_INVALID     | MD5签名验证错误 |
 | 26      |  RATELIMIT     | 限速,每秒50次API调用 |
+| 27      |  USER_CANCELED     | 用户撤销 |
+| 28      |  NOT_FOUND_WLT     | 无法找到钱包 |
+| 29      |  NOT_FOUND_MKT     | 未找到交易对 |
+| 30      |  EXCEED_MAXORDVAL     | 超过最大委托价值 |
+| 31      |  WILL_LIQUIDATE     | 将导致爆仓、强平 |
+| 32      |  NOT_IN_TRADE_PERIOD     | 非交易时间 |
+| 33      |  EXCEED_RAISE_FALL_R     | 超过涨跌停价格限制 |
+| 34      |  PRZ_TOO_LOW     | 超出最小价格限制 |
+| 35      |  EXCEED_TRADE_VOL     | 超出交易量限制 |
+| 36      |  EXCEED_TRADE_COUNT     | 超出交易次数限制 |
+| 37      |  EXCEED_ASK_BID_PRZ_RATE     | 委托价格 超过盘口最新价格偏离 |
+| 64      |  NO_DEFAULT_RISKLIMIT     | 没有指定风险限额 |
 
 
