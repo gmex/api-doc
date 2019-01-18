@@ -11,4 +11,4 @@
     参见:official-ws/nodejs
 
 #### 贡献
-    最新开发版本文档可参考： https://www.github.com/hexiaoyuan/gmex.api
+    最新开发版本文档可参考： https://github.com/hexiaoyuan/gmex.api
