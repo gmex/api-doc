@@ -10,3 +10,5 @@
 #### WebScoket API调试例子
     参见:official-ws/nodejs
 
+#### 贡献
+    最新开发版本文档可参考https://github.com/hexiaoyuan/gmex.api
