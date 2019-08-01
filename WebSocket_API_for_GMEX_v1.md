@@ -487,6 +487,8 @@ type AssetD struct {
 
 3. 查询用户子账号的钱包列表信息： GetWallets 和 GetCcsWallets
 
+```js
+
 用户在交易所中的钱包分为 资金中心钱包(我的钱包)，合约钱包，币币钱包 三种，每个用户都会有这个三个钱包的数据。
 资金中心的钱包的信息数据结构和另外两个有较大不同，因此单独定义之，合约钱包和币币钱包的数据结构一样。
 简言之：
@@ -884,7 +886,7 @@ args: {
     "Qty": 10000,       // 数量(如果>0则为做多,如果<0则为做空)
     "QtyDsp": 0,        // 显示数量, 0表示不隐藏, 用于支持冰山委托
     "Tif": 0,           // 生效时间设定, 0:GoodTillCancel, 1:ImmediateOrCancel/FillAndKill, 2:FillOrKill
-    "OrdFlag": 0,       // 标志位, 0: OF_INVALID, 1: POSTONLY, 2: REDUCEONLY, 4: CLOSEONTRIGGER;
+    "OrdFlag": 0,       // 标志位, 0: OF_INVALID, 1: POSTONLY, 2: REDUCEONLY
     "PrzChg" 0,         // 市价成交档位
     // ... 跟多参数，请参考下面的Ord数据结构定义.
 }
@@ -968,7 +970,7 @@ args: {
 
 调用此接口成功后，用户该AId下的所有报单将在n秒后被全部自动撤单。通过设置0秒可以禁用此功能,常见的使用模式是设 timeout 为 60000,并每隔 15 秒调用一次,建议每次使用完API将Sec设置为0,禁用此功能。
 
-15. 用户收到的推送消息
+13. 用户收到的推送消息
 
 用户登录后会收到的推送消息的subj有：
 
