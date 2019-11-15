@@ -157,7 +157,7 @@ type AssetD struct {
     "args":{
         "Sym":"ETH1812",
         "Typ":"1m",
-        "beginSec":1537077600,
+        "Sec":1537077600,
         "Offset":0,
         "Count":10
     }
