@@ -60,7 +60,7 @@
         "data": [                                       // 所有可订阅交易对列表
             {
                 "Sym": "XRP.USDTP",                     // 交易对名称
-                "TrdCls": 3,                            // 交易对的类型 1.合约 2.现货 3.永续
+                "TrdCls": 3,                            // 交易对的类型 1.现货 2.合约 3.永续
                 "FromC": "USDT",
                 "ToC": "XRP",
                 "QuoteCoin": "USDT",                    // 报价货币
