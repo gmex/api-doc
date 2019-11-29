@@ -285,7 +285,7 @@ type AssetD struct {
 |TICK|比如: tick_BTC.BTC, tick行情当前是没500毫秒更新推送一次.|
 |成交|比如: trade_BTC.BTC, 所有成交都是实时推送的.|
 |20档深度|比如: order20_BTC.BTC 盘口20档深度行情每200毫秒推送一次.|
-|全档深度|比如: orderl2_BTC1.BTC 全深度盘口行情订阅后会先推送全档口,后继推送变更档,推送频率100毫秒.|
+|全档深度|比如: orderl2_BTC.BTC 全深度盘口行情订阅后会先推送全档口,后继推送变更档,推送频率100毫秒.|
 |K线|比如: kline_1m_BTC1812，kline_1h_BTC.BTC 默认订阅的K线数据推送频率1500毫秒.|
 |指数|比如: index_GMEX_CI_BTC，index_GMEX_CI_ETH 订阅的综合指数推送频率为1000毫秒.|
 
