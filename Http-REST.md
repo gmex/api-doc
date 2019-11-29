@@ -896,7 +896,7 @@ http GET https://api-market.gmex.io/v1/rest/GetOrd20List?sym_list=BTC.BTC,BTC.US
      *  Qty: 委托的数量
      *  Dir: 交易的方向,1买 -1卖
      *  QtyDsp: 冰山的数量,大于0小于委托量则在盘口显示的是冰山的值,等于0则显示实际委托的量
-     *  PrzChg: 交的档位, 1档 5档 10档
+     *  PrzChg: 成交的档位, 1档 5档 10档
      *  Otype: 委托的类型,1限价 2市价 3条件限价/止盈止损 4条件市价/止盈止损
      *  OrdFlag: 标志位,0无 1如果立即成交则取消 2只减仓 4触发后平仓 8如果价格大于等于 16如果价格低于等于
      *  Sym: 交易对名称
