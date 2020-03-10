@@ -75,9 +75,11 @@ GMEX官方的生产环境：
 
 |参数 | 描述|
 | :-----   | :-----   |
-|req|用户的请求操作动作，如： GetAssetD，GetCompositeIndex，GetHistKLine等|
+|req|用户的请求操作动作，如： GetAssetD，GetAssetEx，GetCompositeIndex，GetHistKLine等|
 |rid|用户发送请求的唯一编号，由于websocket是异步通讯，用户需要通过匹配收到消息的rid和自己发送的rid来匹配操作和应答。|
 |expires|消息超时，毫秒，建议每次发送请求时填写当前时间加1秒。一般宜在初始化时先用Time消息获取服务端时间,可以相对时差与服务端保持同步。|
+
+有些交易对规则特别复杂，为此特别设置了一些扩展参数数据，对应的API指令为： GetAssetEx，使用和上面API一样。 注意返回的结果是数组(V2AssetCfg)，只有配置了的交易对才会有，没配置的则没有数据，以交易对Sym为主键。  
 
 交易对相关对应的结构定义如下：
 
@@ -129,6 +131,74 @@ type AssetD struct {
     FeeCoin             string  // 如果允许使用第三种货币支付手续费，则配置本项目
     FeeDiscR            float64 // 如果允许使用第三种货币支付手续费，这里配置折扣率
     Grp                 int64   // 交易对所属的分组ID，仅仅是一个逻辑分组概念.
+}
+
+// **交易对的扩展配置数据**
+type V2AssetCfg struct {
+    // 交易对(合约对)
+    Sym string `json:"Sym,omitempty"`
+    // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 手续费计费方法
+    FM FeeMethod `json:"FM,omitempty"`
+    // 尚未支持
+    // 手续费，货币符号，如果未指定，则现货：按照收入额进行收取。期货：按照SettleCoin进行。
+    // 如果指定了FeeCoin则从该币种钱包内进行扣除。注意到，如果该钱包余额不足，则依旧使用SettleCoin进行
+    FeeCoin string `json:"FeeCoin,omitempty"`
+    // 折扣率
+    FeeDiscR MyFloat `json:"FeeDiscR"`
+    // 开放交易时间 (日内,毫秒)
+    OnAt uint64 `json:"OnAt,omitempty"`
+    // 关闭交易时间 (日内,毫秒)
+    OffAt uint64 `json:"OffAt,omitempty"`
+    // 价格涨价幅度 万分比 * 10000
+    RiseR int64 `json:"RiseR,omitempty"`
+    // 价格跌价幅度 万分比 * 10000
+    FallR int64 `json:"FallR,omitempty"`
+    // 最小价格
+    PrzMin float64 `json:"PrzMin,omitempty"`
+    // 买入量
+    LmtBid float64 `json:"LmtBid,omitempty"`
+    // 卖出量
+    LmtAsk float64 `json:"LmtAsk,omitempty"`
+    // 买入卖出总量
+    LmtBidAsk float64 `json:"LmtBidAsk,omitempty"`
+    // 买入次数
+    LmtNumBid uint64 `json:"LmtNumBid,omitempty"`
+    // 卖出次数
+    LmtNumAsk uint64 `json:"LmtNumAsk,omitempty"`
+    // 买入卖出总次数
+    LmtNumBidAsk uint64 `json:"LmtNumBidAsk,omitempty"`
+    // 委托的买价偏离盘口比例(小数)
+    BidPrzR float64 `json:"BidPrzR,omitempty"`
+    // 委托的买价偏离盘口比例(小数)
+    AskPrzR float64 `json:"AskPrzR,omitempty"`
+    // 每统计周期 净卖量。如果为0，则表示不进行检查
+    LmtNetAsk float64 `json:"LmtNetAsk,omitempty"`
+    // 每统计周期 卖/买比率. 如果为0，则表示不进行检查
+    LmtAskQBid float64 `json:"LmtAskQBid,omitempty"`
+    // 从0点开始，在每天的什么时间，开始重置统计值(绝对时间,毫秒)
+    SumAt uint64 `json:"SumAt,omitempty"`
+    // 重置间隔
+    SumInterval uint64 `json:"SumInterval,omitempty"`
+    // 下次重制
+    SumResetNext uint64 `json:"SumResetNext,omitempty"`
+    // 求用户的最近的买入价格的量
+    SzForAvg float64 `json:"SzForAvg,omitempty"`
+    // Maker最低手续费
+    FeeMkrMin MyFloat `json:"FeeMkrMin"`
+    // Taker最低手续费
+    FeeTkrMin MyFloat `json:"FeeTkrMin"`
+    // 下面是挖矿相关设定
+    // 每日有挖矿算力的交易量
+    SzMaxFM float64 `json:"SzMaxFM,omitempty"`
+    // 每日有挖矿算力的交易次数
+    NumMaxFM float64 `json:"NumMaxFM,omitempty"`
+    // 涨经验的交易量完成率.当交易量达到 SzMaxFM * ExpRatio Exp ++
+    ExpRatio float64 `json:"ExpRatio,omitempty"`
+    // 最大Exp
+    ExpMax int64 `json:"ExpMax,omitempty"`
+    // 标志位
+    Flag AssetFlag `json:"Flag,omitempty"`
 }
 
 ```
