@@ -16,7 +16,7 @@ GMEX官方的生产环境：
 
 ## 行情API
 
-1. 获取交易对/合约列表： GetAssetD/GetCompositeIndex
+1. 获取交易对/合约列表： GetAssetD
 
 ```javascript
 // 发送请求消息
