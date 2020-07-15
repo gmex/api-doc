@@ -116,7 +116,7 @@
         "code": 0,   // 0成功,其它则失败
         "data": [
             {
-                "Sym": "GMEX_CI_ETH",        // 指数的名称
+                "Sym": "CI_ETH",        // 指数的名称
                 "At": 1544088829131,         // 时间(毫秒)
                 "High24": 109.37213,         // 24小时的最高价格
                 "Low24": 96.37748,           // 24小时的最低价格
@@ -127,7 +127,7 @@
                 "Volume24": 430782           // 24小时的成交量
             },
             {
-                "Sym": "GMEX_CI_ONT",
+                "Sym": "CI_ONT",
                 "At": 1544088829132,
                 "High24": 0.72193,
                 "Low24": 0.6185,
@@ -150,7 +150,7 @@
      * Sym:交易对名称
      * Sec:K线的起始时间
      * Count: K线的数量
-     * Type: K线的周期类型
+     * Typ: K线的周期类型
      * Offset: 偏移量
      * */
 
@@ -203,7 +203,7 @@
      * 参数说明
      * Sym:交易对名称
      * Count: K线的数量
-     * Type: K线的周期类型
+     * Typ: K线的周期类型
      * */
     http POST https://api-market.gmex.io/v1/rest/GetLatestKLine  Sym='BTC.USDT' Count:=2 Typ='1m'
 
@@ -258,14 +258,14 @@
      *
      * */
 
-    http GET https://api-market.gmex.io/v1/rest/GetIndexTick?idx=GMEX_CI_ETH
+    http GET https://api-market.gmex.io/v1/rest/GetIndexTick?idx=CI_ETH
 
     // 返回
     {
         "code": 0,   // 0成功,其它则失败
         "data": {
             "At": 1544096824635,            // 时间
-            "Sym": "GMEX_CI_ETH",           // 指数名称
+            "Sym": "CI_ETH",           // 指数名称
             "Sz": 0,                        // 量
             "Turnover24": 46223338,         // 24小时指数价值
             "Volume24": 446536,             // 24小时指数的交易量
@@ -421,7 +421,7 @@
 
 ```JavaScript
 
-http GET https://api-market.gmex.io/v1/rest/GetIndexTickList?idx_list=GMEX_CI_BTC,GMEX_CI_ETH
+http GET https://api-market.gmex.io/v1/rest/GetIndexTickList?idx_list=CI_BTC,CI_ETH
 http GET https://api-market.gmex.io/v1/rest/GetTickList?sym_list=BTC.BTC,BTC.USDT,ETH.ETH,ETH.USDT
 http GET https://api-market.gmex.io/v1/rest/GetOrd20List?sym_list=BTC.BTC,BTC.USDT,ETH.ETH,ETH.USDT
 
