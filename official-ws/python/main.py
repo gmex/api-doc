@@ -154,7 +154,7 @@ def sample_main():
     mkt_ws.REQ_GetAssetD(callback_on_mkt_GetAssetD)
 
     # mkt_ws.REQ_GetAssetEx(callback_on_mkt_request_response)
-    # mkt_ws.REQ_Sub_index('GMEX_CI_BTC')
+    # mkt_ws.REQ_Sub_index('CI_BTC')
     # mkt_ws.REQ_Sub_tick('BTC.USDT')
 
     while trd_ws.is_connected() and mkt_ws.is_connected():

@@ -311,7 +311,7 @@ namespace Gmex.API.WS
 
         public async Task REQ_GetCompositeIndexAsync(Action<int, List<string>> cb, CancellationToken cancellationToken)
         {
-            // {"rid":"41","code":0,"data":["GMEX_CI_ETH","GMEX_CI_ETC","GMEX_CI_LTC","GMEX_CI_BTC","GMEX_CI_EOS","GMEX_CI_XRP"]}
+            // {"rid":"41","code":0,"data":["CI_ETH","CI_ETC","CI_LTC","CI_BTC","CI_EOS","CI_XRP"]}
             var req = new WsMarketMessageRequest("GetCompositeIndex", null);
             await this.SendRequestAsync(req, (code, data) =>
             {
@@ -424,7 +424,7 @@ namespace Gmex.API.WS
          * | 20档深度 | 比如: order20_BTC1812|
          * | 全档深度 | 比如: orderl2_BTC1812|
          * | K线      | 比如: kline_1m_BTC1812，kline_1h_BTC1812|
-         * | 指数     | 比如: index_GMEX_CI_BTC，index_GMEX_CI_ETH|
+         * | 指数     | 比如: index_CI_BTC，index_CI_ETH|
          ***/
 
         public const string K_SUBJ_TICK = "tick";
